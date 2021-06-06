@@ -21,5 +21,15 @@ const loginValidation = (data)=>{
     return schema.validate(data);
 };
 
+// Users listing API variable validation
+const userListValidation = (data)=>{
+    const schema = Joi.object({
+        page:Joi.number().min(1),
+        limit:Joi.number().min(1),
+    });
+    return schema.validate(data);
+}
+
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
+module.exports.userListValidation = userListValidation;
