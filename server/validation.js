@@ -26,6 +26,7 @@ const userListValidation = (data)=>{
     const schema = Joi.object({
         page:Joi.number().min(1),
         limit:Joi.number().min(1),
+        search:Joi.string()
     });
     return schema.validate(data);
 }
