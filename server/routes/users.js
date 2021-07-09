@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const verify = require('./verifyToken');
 const User = require('../models/User');
-const { userListValidation } = require('../validation');
+const bcrypt = require('bcryptjs');
+
+const { userListValidation, registerValidation } = require('../validation');
 
 router.get('/', verify, async (req, res) => {
     const page = (req.query.page) ? parseInt(req.query.page) : 1;
@@ -12,7 +14,7 @@ router.get('/', verify, async (req, res) => {
     if(error) return res.status(400).send(error.details[0].message);
     try {
         const dataList = await User.find({'name': new RegExp(searchKeyword)}).limit(limit).skip((page - 1) * limit).exec();
-        const totalPage = await User.count({'name': new RegExp(searchKeyword)});
+        const totalPage = await User.countDocuments({'name': new RegExp(searchKeyword)});
         return res.json(
             {
                 totalPage: Math.ceil(totalPage / limit),
@@ -24,6 +26,34 @@ router.get('/', verify, async (req, res) => {
         );
     } catch (err) {
         console.error(err.message);
+    }
+});
+
+// Registation
+router.post('/', async (req, res) => {
+    // Vaildate
+    const { error } = registerValidation(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+
+    // Check if user exist in DB
+    const emailExist = await User.findOne({ email: req.body.email});
+    if(emailExist) return res.status(400).send('Email already exist');
+
+    // Hash passowrd
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(req.body.password, salt);
+
+    const user = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: hashPassword
+    });
+
+    try{
+        const savedUser = await user.save();
+        res.send({user: user._id});
+    }catch(err){
+        res.status(400).send(err);
     }
 });
 
