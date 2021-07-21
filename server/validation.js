@@ -11,6 +11,18 @@ const registerValidation = (data)=>{
     return schema.validate(data);
 };
 
+// Update validation
+const updateValidation = (data)=>{
+    const schema = Joi.object({
+        _id:Joi.string().required(),
+        name:Joi.string().min(3).required(),
+        email:Joi.string().min(6).required().email(),
+        password:Joi.string().min(6).required()
+    });
+
+    return schema.validate(data);
+};
+
 // Login validation
 const loginValidation = (data)=>{
     const schema = Joi.object({
@@ -32,5 +44,6 @@ const userListValidation = (data)=>{
 }
 
 module.exports.registerValidation = registerValidation;
+module.exports.updateValidation = updateValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.userListValidation = userListValidation;
