@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const userRoute = require('./routes/users');
 const authRoute = require('./routes/auth');
+const weatherRoute = require('./routes/weather');
 
 app.use(cors());
 
@@ -19,6 +20,7 @@ app.use(express.json());
 //Routes middleware
 app.use('/api/user', authRoute);
 app.use('/api/users', userRoute);
+app.use('/api/weather', weatherRoute);
 
 // Handle production
 if(process.env.NODE_ENV === 'production'){
