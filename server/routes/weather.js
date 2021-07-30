@@ -16,11 +16,11 @@ router.get('/', async (req, res) => {
 
 router.get('/details', async (req, res) => {
     let returnObj = {};
-    await axios.get(process.env.WEATHER_API_URL+'/current', {params: {key: process.env.WEATHER_API_KEY, ...req.query}})
+    await axios.get('http://api.weatherbit.io/v2.0//current', {params: {key: process.env.WEATHER_API_KEY, ...req.query}})
     .then( (res) => {
         returnObj['current'] = res.data
     })
-    await axios.get(process.env.WEATHER_API_URL+'/forecast/daily', {params: {key: process.env.WEATHER_API_KEY, ...req.query}})
+    await axios.get('http://api.weatherbit.io/v2.0//forecast/daily', {params: {key: process.env.WEATHER_API_KEY, ...req.query}})
     .then( (res) => {
         console.log(res.data)
         returnObj['forecast'] = res.data
